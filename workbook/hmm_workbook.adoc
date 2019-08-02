@@ -1,0 +1,40 @@
+= The Hidden Markov Models Guided by Tests                              
+Daniel Kohlsdorf (c) 2019                                      
+:sectnums:                                                          
+:toc:                                                               
+:toclevels: 4                                                       
+:toc-title: Content                                                                                    
+:description: Example AsciiDoc document                             
+:keywords: AsciiDoc                                                 
+:imagesdir: ./img                                                   
+
+== Introduction to Time Series Modeling
+
+== Short Probability Primer
+
+=== Probabilities And Bayes Theorem
+
+=== The Multinomial Distribution
+
+=== The Normal Distribution
+
+== Numerically Stable Probabilities
+
+=== Log Probabilites
+
+=== Implementing Multiplication and Addition
+
+== Markov Chains
+
+=== Modeling Sequences with Markov Chains
+
+=== Implementing Probability Calculations with Markov Chains
+
+== Hidden Markov Models Basics
+
+== The Viterbi Algorithm
+
+== The Forward / Backward Algorithm
+
+== Baum Welch Estimation 
+
