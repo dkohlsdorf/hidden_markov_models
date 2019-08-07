@@ -37,3 +37,7 @@ class MarkovChainTest(unittest.TestCase):
         chain[Transition(1,0)] += LogProb.from_float(3.0)
         self.assertAlmostEqual(chain[Transition(0,0)].prob, LogProb.from_float(1.0).prob, delta=1e-8)
         self.assertAlmostEqual(chain[Transition(1,0)].prob, LogProb.from_float(5.0).prob, delta=1e-8)
+
+    def test_n_states(self):
+        chain = MarkovChain.from_probs(LEFT_RIGHT)
+        self.assertEqual(chain.n_states, 3)

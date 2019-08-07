@@ -30,9 +30,19 @@ Daniel Kohlsdorf (c) 2019
 
 === Implementing Probability Calculations with Markov Chains
 
+=== Applications in Text Processing
+
 == Hidden Markov Models Basics
 
+=== Modeling unobservable Markov Chains with HMMs
+
+=== Implementing A Hidden Markov Model
+
+=== Applications in Gesture Recognition
+
 == The Viterbi Algorithm
+
+=== Viterbi Decoding and 
 
 == The Forward / Backward Algorithm
 

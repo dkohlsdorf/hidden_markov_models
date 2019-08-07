@@ -38,3 +38,6 @@ class LogProb:
         if self.prob > other.prob:
             return LogProb(self.prob + log(1.0 + exp(other.prob - self.prob)))
         return LogProb(other.prob + log(1.0 + exp(self.prob - other.prob)))
+
+    def __repr__(self):
+        return "p = {}".format(exp(self.prob))

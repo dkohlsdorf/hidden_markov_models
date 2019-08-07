@@ -3,12 +3,14 @@ from collections import namedtuple
 
 Transition = namedtuple("Transition", "from_state to_state")
 
+START_STATE = -1
+STOP_STATE  = -2
 
 class MarkovChain:     
 
     def __init__(self):
         self.transitions = {}        
-
+            
     @classmethod
     def from_probs(cls, trans):
         n = len(trans)
@@ -29,3 +31,10 @@ class MarkovChain:
         if transition not in self.transitions:
             return LogProb(ZERO)
         return self.transitions[transition]
+
+    @property
+    def n_states(self):
+        from_states = set([from_state for from_state, _ in self.transitions])
+        to_states   = set([to_state for to_state, _ in self.transitions])
+        states      = from_states | to_states
+        return max(states) + 1

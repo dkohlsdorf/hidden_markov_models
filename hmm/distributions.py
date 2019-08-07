@@ -1,3 +1,6 @@
+import numpy as np
+
+
 from hmm.logprob import LogProb, ZERO
 
 
@@ -27,3 +30,22 @@ class Multinomial:
                 z += self.event_counts[event]
             z += self.pseudo_counts
         return z
+
+
+class Gaussian:
+
+    def __init__(self, mean, variance):
+        self.mean = mean
+        self.variance = variance
+
+    def __getitem__(self, x):
+        error = np.square(x - self.mean) / self.variance
+        return LogProb(np.sum(self.scaler + error))
+
+    @property
+    def std(self):
+        return np.sqrt(self.variance)
+
+    @property
+    def scaler(self):
+        return -0.5 * np.log(2 * np.pi * self.std)
