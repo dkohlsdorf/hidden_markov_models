@@ -3,11 +3,13 @@ import unittest
 from hmm.markov_chain import Transition, MarkovChain
 from hmm.logprob import *
 
+
 LEFT_RIGHT = [
     [0.6, 0.4, 0.0],
     [0.0, 0.6, 0.4],
     [0.0, 0.0, 0.6]
 ]
+
 
 class MarkovChainTest(unittest.TestCase):
 

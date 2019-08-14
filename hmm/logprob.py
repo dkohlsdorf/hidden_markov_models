@@ -39,5 +39,8 @@ class LogProb:
             return LogProb(self.prob + log(1.0 + exp(other.prob - self.prob)))
         return LogProb(other.prob + log(1.0 + exp(self.prob - other.prob)))
 
+    def __gt__(self, other):
+        return self.prob > other.prob
+
     def __repr__(self):
         return "p = {}".format(exp(self.prob))

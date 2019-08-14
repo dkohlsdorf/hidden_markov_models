@@ -6,6 +6,11 @@ from hmm.logprob import LogProb, ZERO
 
 class LogProbTest(unittest.TestCase):
 
+    def test_gt(self):
+        lx = LogProb.from_float(1.0)
+        ly = LogProb.from_float(0.0)
+        self.assertTrue(lx > ly)
+
     def test_from_float(self):
         x  = 0.5
         lx = LogProb.from_float(x)
