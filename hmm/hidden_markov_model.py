@@ -4,5 +4,6 @@ class HiddenMarkovModel:
         self.transitions = transitions
         self.observations = observations
 
+    @property
     def n_states(self):
-        self.transitions.n_states  
+        return self.transitions.n_states  

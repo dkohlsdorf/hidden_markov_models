@@ -21,6 +21,8 @@ class LogProb:
 
     def __mul__(self, other):
         assert isinstance(other, LogProb)   
+        if self.is_zero or other.is_zero:
+            return LogProb(ZERO)
         logprob = self.prob + other.prob
         return LogProb(logprob)
 
