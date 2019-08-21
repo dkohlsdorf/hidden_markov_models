@@ -2,7 +2,6 @@ import numpy as np
 from hmm.markov_chain import  START_STATE, STOP_STATE, Transition
 from hmm.logprob import ZERO, LogProb
 
-
 def viterbi(hmm, sequence): 
     cdef int T = sequence.shape[0]
     cdef int N = hmm.n_states
@@ -16,9 +15,9 @@ def viterbi(hmm, sequence):
 
     cdef int t, i, j
     for i in range(0, N):
-        init    = Transition(START_STATE, i)
-        sample = sequence[0]
-        logprob = hmm.observations[i][sample] * hmm.transitions[init]
+        init     = Transition(START_STATE, i)
+        sample   = sequence[0]
+        logprob  = hmm.observations[i][sample] * hmm.transitions[init]
         dp[0, i] = logprob.prob
 
     for t in range(1, T):
