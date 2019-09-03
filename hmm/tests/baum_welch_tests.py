@@ -35,5 +35,7 @@ class BaumWelchTests(unittest.TestCase):
         sequences = [seq]
         domain    = HMM.observations[0].domain
         obs       = bw.discrete_obs(sequences, gammas, domain)
-        self.assertEquals(len(obs), 3)
-        print([x.event_probs for x in obs])
+        self.assertEqual(len(obs), 3)
+        self.assertGreater(obs[0][0], obs[0][1])
+        self.assertGreater(obs[1][1], obs[1][0])
+        self.assertGreater(obs[2][0], obs[2][1])
