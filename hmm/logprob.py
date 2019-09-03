@@ -19,6 +19,10 @@ class LogProb:
     def is_zero(self):
         return isinf(self.prob) and self.prob < 0.0
 
+    @property
+    def exp(self):
+        return exp(self.prob)
+
     def __mul__(self, other):
         assert isinstance(other, LogProb)   
         if self.is_zero or other.is_zero:
@@ -27,7 +31,9 @@ class LogProb:
         return LogProb(logprob)
 
     def __truediv__(self, other):
-        assert isinstance(other, LogProb)  
+        assert isinstance(other, LogProb) 
+        if self.is_zero or other.is_zero:
+            return LogProb(ZERO)
         logprob = self.prob - other.prob
         return LogProb(logprob)
 

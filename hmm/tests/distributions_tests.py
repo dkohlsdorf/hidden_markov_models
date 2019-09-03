@@ -6,17 +6,15 @@ from functools import reduce
 from hmm.distributions import Multinomial, Gaussian
 from hmm.logprob import LogProb, ZERO
 
+
 class MultinomialTest(unittest.TestCase):
 
     def test_multinomial(self):
-        multinomial = Multinomial({0:20, 1:80})
+        multinomial = Multinomial({0:0.2, 1:0.8})
         self.assertEqual(multinomial.domain, set([0, 1]))
-        self.assertEqual(multinomial.scaler, 100)        
-        multinomial = Multinomial({0:19, 1:78}, domain = set([0, 1, 2]), pseudo_counts=1)
-        self.assertEqual(multinomial.scaler, 100)
 
     def test_loglikelihood(self):
-        multinomial = Multinomial({0:20, 1:80})
+        multinomial = Multinomial({0:0.2, 1:0.8})
         self.assertAlmostEqual(multinomial[0].prob, log(0.2), 1e-8)
         self.assertAlmostEqual(multinomial[1].prob, log(0.8), 1e-8)
 

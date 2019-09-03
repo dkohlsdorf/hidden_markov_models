@@ -11,6 +11,7 @@ def infer(hmm, sequence):
     alpha = fwd(hmm, sequence)
     beta  = bwd(hmm, sequence)
 
+    cdef int t, i
     for t in range(0, T):
         scaler = LogProb(ZERO)
         for i in range(0, N):
@@ -20,8 +21,7 @@ def infer(hmm, sequence):
         for i in range(0, N):
             logprob = LogProb(gamma[t,i]) / scaler
             gamma[t, i] = logprob.prob
-    return np.asarray(gamma)
-
+    return np.asarray(gamma), alpha, beta
 
 
 def bwd(hmm, sequence):

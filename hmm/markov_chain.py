@@ -9,8 +9,8 @@ STOP_STATE  = -2
 class MarkovChain:     
 
     def __init__(self):
-        self.transitions = {}        
-            
+        self.transitions = {}                                
+
     @classmethod
     def from_probs(cls, trans):
         n = len(trans)
@@ -38,3 +38,13 @@ class MarkovChain:
         to_states   = set([to_state for to_state, _ in self.transitions])
         states      = from_states | to_states
         return max(states) + 1
+
+    def __repr__(self):
+        n = self.n_states
+        result = ""
+        for i in range(0, n):
+            for j in range(0, n):
+                t = Transition(i ,j)                
+                result += "{:.1}, ".format(self[t].exp)
+            result += '\n'
+        return result

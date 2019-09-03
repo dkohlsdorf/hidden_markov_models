@@ -1,4 +1,4 @@
-= The Hidden Markov Models Guided by Tests                              
+= Hidden Markov Models Guided by Tests                              
 Daniel Kohlsdorf (c) 2019                                      
 :sectnums:                                                          
 :toc:                                                               
@@ -7,6 +7,9 @@ Daniel Kohlsdorf (c) 2019
 :description: Example AsciiDoc document                             
 :keywords: AsciiDoc                                                 
 :imagesdir: ./img                                                   
+== Foreword
+
+Cython and python
 
 == Introduction to Time Series Modeling
 

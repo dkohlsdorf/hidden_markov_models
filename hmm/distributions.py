@@ -6,30 +6,20 @@ from hmm.logprob import LogProb, ZERO
 
 class Multinomial:
 
-    def __init__(self, event_counts, domain = None, pseudo_counts = 0):
+    def __init__(self, event_probs, domain = None):
         if domain is None:
-            self.domain = event_counts.keys()
+            self.domain = event_probs.keys()
         else:
             self.domain = domain
-        self.event_counts = event_counts
-        self.pseudo_counts = pseudo_counts
+        self.event_probs = event_probs
 
     def __getitem__(self, event):
         assert event in self.domain
-        if event not in self.event_counts:
-            prob = self.pseudo_counts / self.scaler
+        if event not in self.event_probs:
+            prob = LogProb(ZERO)
         else:
-            prob = (self.event_counts[event] + self.pseudo_counts) / self.scaler
-        return LogProb.from_float(prob)
-
-    @property
-    def scaler(self):
-        z = 0.0
-        for event in self.domain:
-            if event in self.event_counts:
-                z += self.event_counts[event]
-            z += self.pseudo_counts
-        return z
+            prob = self.event_probs[event]
+        return LogProb.from_float(prob)        
 
 
 class Gaussian:

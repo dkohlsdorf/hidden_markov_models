@@ -36,5 +36,5 @@ class FwdBwdTests(unittest.TestCase):
 
     def test_infer(self):
         seq = np.array([0,0,0,1,1,1,0,0,0])
-        dp = infer(HMM, seq)
+        dp, _, _ = infer(HMM, seq)
         self.assertListEqual(FwdBwdTests.dp2path(dp), [0, 0, 0, 1, 1, 1, 2, 2, 2])
