@@ -1,4 +1,4 @@
-= Hidden Markov Models Guided by Tests                              
+= Hidden Markov Models                              
 Daniel Kohlsdorf (c) 2019                                      
 :sectnums:                                                          
 :toc:                                                               
@@ -7,11 +7,46 @@ Daniel Kohlsdorf (c) 2019
 :description: Example AsciiDoc document                             
 :keywords: AsciiDoc                                                 
 :imagesdir: ./img                                                   
+
 == Foreword
 
-Cython and python
+This short tutorial is a practical guide to probabilistic modeling
+of sequential data by implementing hidden Markov models. At the end of this tutorial readers will be able to model sequential data from various
+applications including: biological sequences, text, speech or gesture.
 
-== Introduction to Time Series Modeling
+Readers are expected to be intermediate python programmers. Cython
+knowledge will help, too. I decided to use python since it is
+one of the most common used language in data science and 
+cython to speed up some of the heavy lifting required by HMMs.
+However, if you don't care about speed the reader can also 
+implement everything in pure python. The sections where
+the reader could benefit from cython's speed are highlighted.
+
+I provide the practical part of the book in the form of a test suit. Readers are expected to write the actual code to make the tests happen.
+One possible solution code can be found in this github repository.
+
+== Introduction to Sequence Modeling
+Before we start modeling sequences, we need to understand
+the type of data we are dealing with. Chapter 2.1 will introduce
+different forms of sequence data while Chapter 2.2 will introduce 
+the concept of timewarp and alignment. 
+
+=== Sequence Data
+
+Classically there are two types of sequences: catgeorical sequences and numeric sequences. Categorical sequences are sequences of discrete symbols
+such as sequences of letters to form words, sequences of words to form text and sequences of bases that form DNA. Numeric sequences 
+
+==== Text
+==== DNA
+==== Sensors
+==== Speech
+
+=== Alignment
+
+=== Problems
+==== Recognition
+==== Clustering
+==== Segmentation
 
 == Short Probability Primer
 
@@ -45,7 +80,7 @@ Cython and python
 
 == The Viterbi Algorithm
 
-=== Viterbi Decoding and 
+=== Viterbi Decoding and Backtracking
 
 == The Forward / Backward Algorithm
 
