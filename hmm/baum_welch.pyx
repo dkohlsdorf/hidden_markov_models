@@ -35,7 +35,7 @@ def markov(zetas, gammas):
     cdef m = len(zetas)
     cdef n = zetas[0].shape[1]
     cdef double[:, :] transitions = np.ones((n, n), dtype=np.double) * ZERO
-    cdef e, t, i, j
+    cdef int e, t, i, j
     for i in range(0, n):
         for j in range(0, n):
             scaler = LogProb(ZERO)
@@ -54,7 +54,8 @@ def discrete_obs(sequences, gammas, domain):
     assert len(gammas) > 0 and len(sequences) == len(gammas)
     cdef m = len(gammas)
     cdef n = gammas[0].shape[1]
-    multinomials = []
+    cdef multinomials = []
+    cdef int i, k, e, t
     for i in range(0, n):
         multinomial  = {}     
         for k in domain:
@@ -74,10 +75,11 @@ def discrete_obs(sequences, gammas, domain):
 
 def continuous_obs(sequences, gammas):
     assert len(gammas) > 0 and len(sequences) == len(gammas)
-    m = len(gammas)
-    n = gammas[0].shape[1]
-    d = sequences[0].shape[1]        
-    observations = []
+    cdef m = len(gammas)
+    cdef n = gammas[0].shape[1]
+    cdef d = sequences[0].shape[1]        
+    cdef observations = []
+    cdef int i, e, t
     for i in range(0, n):
         mu     = np.zeros(d)
         sigma  = np.zeros(d) 
