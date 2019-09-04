@@ -1,10 +1,13 @@
 import unittest
 import numpy as np
 
-from hmm.tests.left_right_hmm import HMM
+import matplotlib.pyplot as plt
+
+from hmm.tests.left_right_hmm import HMM, HMM_CONT
 from hmm.markov_chain import Transition
 import hmm.fwd_bwd as infer
 import hmm.baum_welch as bw
+from hmm.logprob import ZERO
 
 class BaumWelchTests(unittest.TestCase):
 
@@ -13,6 +16,20 @@ class BaumWelchTests(unittest.TestCase):
         [0.0, 0.7, 0.3],
         [0.0, 0.0, 1.0]
     ]
+
+    @classmethod
+    def dp2path(cls, dp):
+        (T, N) = dp.shape
+        path = []
+        for t in range(0, T):
+            max_ll    = ZERO
+            max_state = 0
+            for j in range(0, N):
+                if dp[t, j] > max_ll:
+                    max_ll = dp[t, j]
+                    max_state = j
+            path.append(max_state)
+        return path
 
     def test_markov(self):
         seq    = np.array([0,0,0,1,1,1,0,0,0])
@@ -39,3 +56,23 @@ class BaumWelchTests(unittest.TestCase):
         self.assertGreater(obs[0][0], obs[0][1])
         self.assertGreater(obs[1][1], obs[1][0])
         self.assertGreater(obs[2][0], obs[2][1])
+
+    def test_continuous_obs(self):
+        seq = np.array([
+            np.zeros(1),
+            np.zeros(1),
+            np.zeros(1),
+            np.ones(1),
+            np.ones(1),
+            np.ones(1),
+            np.zeros(1),
+            np.zeros(1),
+            np.zeros(1)
+        ])
+        gamma, _, _ = infer.infer(HMM_CONT, seq)
+        gammas    = [gamma]
+        sequences = [seq]
+        obs       = bw.continuous_obs(sequences, gammas)
+        self.assertEqual(round(obs[0].mean[0]), 0)
+        self.assertEqual(round(obs[1].mean[0]), 1)
+        self.assertEqual(round(obs[2].mean[0]), 0)

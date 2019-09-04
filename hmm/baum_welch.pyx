@@ -2,7 +2,8 @@ import numpy as np
 
 from hmm.logprob import ZERO, LogProb
 from hmm.markov_chain import Transition, MarkovChain
-from hmm.distributions import Multinomial
+from hmm.distributions import Multinomial, Gaussian
+
 
 def infer(hmm, sequence, fwd, bwd):
     cdef int T = sequence.shape[0]
@@ -69,3 +70,29 @@ def discrete_obs(sequences, gammas, domain):
         observations = Multinomial(multinomial, domain)
         multinomials.append(observations)
     return multinomials
+
+
+def continuous_obs(sequences, gammas):
+    assert len(gammas) > 0 and len(sequences) == len(gammas)
+    m = len(gammas)
+    n = gammas[0].shape[1]
+    d = sequences[0].shape[1]        
+    observations = []
+    for i in range(0, n):
+        mu     = np.zeros(d)
+        sigma  = np.zeros(d) 
+        scaler = 0 
+        for e in range(0, m):
+            T = gammas[e].shape[0]
+            for t in range(0, T):
+                weight = LogProb(gammas[e][t, i]).exp
+                mu     += sequences[e][t] * weight
+                scaler += weight
+        mu /= scaler
+        for e in range(0, m):
+            T = gammas[e].shape[0]
+            for t in range(0, T):
+                weight = LogProb(gammas[e][t, i]).exp
+                sigma += np.square(sequences[e][t] - mu) * weight
+        observations.append(Gaussian(mu, sigma))
+    return observations

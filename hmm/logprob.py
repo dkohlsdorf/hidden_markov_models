@@ -17,10 +17,12 @@ class LogProb:
 
     @property
     def is_zero(self):
-        return isinf(self.prob) and self.prob < 0.0
+        return isinf(self.prob)
 
     @property
     def exp(self):
+        if self.is_zero:
+            return 0.0
         return exp(self.prob)
 
     def __mul__(self, other):

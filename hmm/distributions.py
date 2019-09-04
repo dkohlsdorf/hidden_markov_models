@@ -29,13 +29,17 @@ class Gaussian:
         self.variance = variance
 
     def __getitem__(self, x):
-        error = np.square(x - self.mean) / self.variance
-        return LogProb(np.sum(self.scaler + error))
+        error = -0.5 * np.square(x - self.mean) / self.variance
+        return LogProb(self.scaler + np.sum(error))
 
     @property
     def std(self):
         return np.sqrt(self.variance)
 
     @property
+    def dim(self):
+        return len(self.variance)
+
+    @property
     def scaler(self):
-        return -0.5 * np.log(2 * np.pi * self.std)
+        return -((self.dim / 2) * np.log(2 * np.pi)) - np.sum(np.log(np.sqrt(self.variance)))
