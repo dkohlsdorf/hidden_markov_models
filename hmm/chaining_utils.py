@@ -34,3 +34,7 @@ def connect_models(combined, offsets, model2model):
         connect_start = offsets[j]
         transition    = Transition(connect_end, connect_start)
         combined[transition] = LogProb.from_float(1.0)
+
+
+def connect_hmms(hmms, model2model = []):
+    pass
