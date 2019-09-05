@@ -6,7 +6,7 @@ from hmm.logprob import LogProb
 
 from hmm.tests.left_right_hmm import HMM
 
-class ViterbiTests(unittest.TestCase):
+class ViterbiTest(unittest.TestCase):
 
     def test_viterbi(self):
         seq = np.array([0,0,0,1,1,1,0,0,0])

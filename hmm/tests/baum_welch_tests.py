@@ -9,7 +9,7 @@ import hmm.fwd_bwd as infer
 import hmm.baum_welch as bw
 from hmm.logprob import ZERO
 
-class BaumWelchTests(unittest.TestCase):
+class BaumWelchTest(unittest.TestCase):
 
     LEFT_RIGHT = [
         [0.7, 0.3, 0.0],

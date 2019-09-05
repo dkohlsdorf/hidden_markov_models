@@ -33,8 +33,8 @@ the concept of timewarp and alignment.
 
 === Sequence Data
 
-Classically there are two types of sequences: catgeorical sequences and numeric sequences. Categorical sequences are sequences of discrete symbols
-such as sequences of letters to form words, sequences of words to form text and sequences of bases that form DNA. Numeric sequences 
+Classically there are two types of sequences: catgeorical sequences and time series. Categorical sequences are sequences of discrete symbols
+such as sequences of letters to form words, sequences of words to form text and sequences of bases that form DNA. Time series are numeric sequences of scalar numbers or vectors.
 
 ==== Text
 ==== DNA

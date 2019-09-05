@@ -1,3 +1,5 @@
+import numpy as np
+
 from hmm.logprob import LogProb, ZERO
 from collections import namedtuple
 
@@ -34,6 +36,8 @@ class MarkovChain:
 
     @property
     def n_states(self):
+        if len(self.transitions) == 0:
+            return 0
         from_states = set([from_state for from_state, _ in self.transitions])
         to_states   = set([to_state for to_state, _ in self.transitions])
         states      = from_states | to_states
@@ -43,8 +47,16 @@ class MarkovChain:
         n = self.n_states
         result = ""
         for i in range(0, n):
+            t = Transition(START_STATE ,i)                
+            result += "{}, ".format(np.round(self[t].exp, 1))
+        result += '\n'
+        for i in range(0, n):
             for j in range(0, n):
                 t = Transition(i ,j)                
-                result += "{:.1}, ".format(self[t].exp)
+                result += "{}, ".format(np.round(self[t].exp, 1))
             result += '\n'
+        for i in range(0, n):
+            t = Transition(i ,STOP_STATE)                
+            result += "{}, ".format(np.round(self[t].exp, 1))
+        result += '\n'
         return result
