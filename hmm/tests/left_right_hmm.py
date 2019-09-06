@@ -16,9 +16,9 @@ LEFT_RIGHT[Transition(START_STATE, 0)] = LogProb(0.0)
 LEFT_RIGHT[Transition(2, STOP_STATE)]  = LogProb(0.0)
 
 OBS = [
-    Multinomial({0:80, 1:20}),
-    Multinomial({0:20, 1:80}),
-    Multinomial({0:80, 1:20})
+    Multinomial({0:0.8, 1:0.2}),
+    Multinomial({0:0.2, 1:0.8}),
+    Multinomial({0:0.8, 1:0.2})
 ]
 
 CONT = [

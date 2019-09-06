@@ -17,7 +17,7 @@ class MarkovChain:
     def from_probs(cls, trans):
         n = len(trans)
         assert n > 0 and n == len(trans[0])        
-        chain = MarkovChain()
+        chain = MarkovChain()        
         for i in range(0, n):
             for j in range(0, n):
                 chain[Transition(i, j)] = LogProb.from_float(trans[i][j])

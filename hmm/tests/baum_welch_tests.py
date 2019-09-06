@@ -3,10 +3,11 @@ import numpy as np
 
 import matplotlib.pyplot as plt
 
+import hmm.fwd_bwd    as infer
+import hmm.baum_welch as bw
+
 from hmm.tests.left_right_hmm import HMM, HMM_CONT
 from hmm.markov_chain import Transition
-import hmm.fwd_bwd as infer
-import hmm.baum_welch as bw
 from hmm.logprob import ZERO
 
 class BaumWelchTest(unittest.TestCase):

@@ -1,5 +1,6 @@
 from hmm.markov_chain import MarkovChain, Transition
 from hmm.logprob import LogProb    
+from hmm.hidden_markov_model import HiddenMarkovModel
 
 
 def combine_markov(chain1, chain2):
@@ -37,4 +38,8 @@ def connect_models(combined, offsets, model2model):
 
 
 def connect_hmms(hmms, model2model = []):
-    pass
+    chains = [hmm.transitions for hmm in hmms]
+    observations = [observation for hmm in hmms for observation in hmm.observations]
+    (combined, offset) = combine_all(chains)
+    connect_models(combined, offset, model2model)
+    return HiddenMarkovModel(combined, observations)

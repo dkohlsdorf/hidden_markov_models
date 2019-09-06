@@ -1,5 +1,5 @@
 import numpy as np
-
+import io
 
 from hmm.logprob import LogProb, ZERO
 

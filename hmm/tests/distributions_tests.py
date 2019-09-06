@@ -3,6 +3,8 @@ import numpy as np
 from math import log
 from functools import reduce
 
+import tensorflow as tf
+
 from hmm.distributions import Multinomial, Gaussian
 from hmm.logprob import LogProb, ZERO
 
@@ -16,7 +18,7 @@ class MultinomialTest(unittest.TestCase):
     def test_loglikelihood(self):
         multinomial = Multinomial({0:0.2, 1:0.8})
         self.assertAlmostEqual(multinomial[0].prob, log(0.2), 1e-8)
-        self.assertAlmostEqual(multinomial[1].prob, log(0.8), 1e-8)
+        self.assertAlmostEqual(multinomial[1].prob, log(0.8), 1e-8)        
 
 
 class GaussianTest(unittest.TestCase):
