@@ -10,7 +10,7 @@ from hmm.tests.left_right_hmm import HMM, HMM_CONT
 from hmm.markov_chain import Transition
 from hmm.logprob import ZERO
 
-class BaumWelchTest(unittest.TestCase):
+class BaumWelchTests(unittest.TestCase):
 
     LEFT_RIGHT = [
         [0.7, 0.3, 0.0],

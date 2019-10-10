@@ -48,15 +48,15 @@ class MarkovChain:
         result = ""
         for i in range(0, n):
             t = Transition(START_STATE ,i)                
-            result += "{}, ".format(np.round(self[t].exp, 1))
+            result += "{}, ".format(np.round(self[t].exp, 5))
         result += '\n'
         for i in range(0, n):
             for j in range(0, n):
                 t = Transition(i ,j)                
-                result += "{}, ".format(np.round(self[t].exp, 1))
+                result += "{}, ".format(np.round(self[t].exp, 5))
             result += '\n'
         for i in range(0, n):
             t = Transition(i ,STOP_STATE)                
-            result += "{}, ".format(np.round(self[t].exp, 1))
+            result += "{}, ".format(np.round(self[t].exp, 5))
         result += '\n'
         return result

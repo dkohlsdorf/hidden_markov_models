@@ -96,5 +96,6 @@ def continuous_obs(sequences, gammas):
             for t in range(0, T):
                 weight = LogProb(gammas[e][t, i]).exp
                 sigma += np.square(sequences[e][t] - mu) * weight
+        sigma /= scaler
         observations.append(Gaussian(mu, sigma))
     return observations

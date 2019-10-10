@@ -53,4 +53,4 @@ class LogProb:
         return self.prob > other.prob
 
     def __repr__(self):
-        return "p = {}".format(exp(self.prob))
+        return "p = {} [{}]".format(exp(self.prob), self.prob)
