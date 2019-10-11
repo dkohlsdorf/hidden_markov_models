@@ -30,7 +30,7 @@ def infer(hmm, sequence, fwd, bwd):
     return np.asarray(zeta)
 
 
-def markov(zetas, gammas):
+def markov(zetas, gammas, cls = MarkovChain):
     assert len(zetas) > 0 and len(zetas) == len(gammas)
     cdef m = len(zetas)
     cdef n = zetas[0].shape[1]
@@ -47,7 +47,7 @@ def markov(zetas, gammas):
                     scaler += LogProb(gammas[e][t, i])
             prob = LogProb(transitions[i,j]) / scaler
             transitions[i, j] = prob.exp
-    return MarkovChain.from_probs(transitions)
+    return cls.from_probs(transitions)
 
 
 def discrete_obs(sequences, gammas, domain):
