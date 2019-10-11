@@ -32,8 +32,8 @@ def infer(hmm, sequence, fwd, bwd):
 
 def markov(zetas, gammas, cls = MarkovChain):
     assert len(zetas) > 0 and len(zetas) == len(gammas)
-    cdef m = len(zetas)
-    cdef n = zetas[0].shape[1]
+    cdef int m = len(zetas)
+    cdef int n = zetas[0].shape[1]
     cdef double[:, :] transitions = np.ones((n, n), dtype=np.double) * ZERO
     cdef int e, t, i, j
     for i in range(0, n):
@@ -52,8 +52,8 @@ def markov(zetas, gammas, cls = MarkovChain):
 
 def discrete_obs(sequences, gammas, domain):
     assert len(gammas) > 0 and len(sequences) == len(gammas)
-    cdef m = len(gammas)
-    cdef n = gammas[0].shape[1]
+    cdef int m = len(gammas)
+    cdef int n = gammas[0].shape[1]
     cdef multinomials = []
     cdef int i, k, e, t
     for i in range(0, n):
@@ -73,11 +73,16 @@ def discrete_obs(sequences, gammas, domain):
     return multinomials
 
 
+def continuous_mixture(sequences, gamma_seq, prev_obs):
+    assert len(gammas) > 0 and len(sequences) == len(gammas)
+    pass
+
+
 def continuous_obs(sequences, gammas):
     assert len(gammas) > 0 and len(sequences) == len(gammas)
-    cdef m = len(gammas)
-    cdef n = gammas[0].shape[1]
-    cdef d = sequences[0].shape[1]        
+    cdef int m = len(gammas)
+    cdef int n = gammas[0].shape[1]
+    cdef int d = sequences[0].shape[1]        
     cdef observations = []
     cdef int i, e, t
     for i in range(0, n):

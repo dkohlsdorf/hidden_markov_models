@@ -40,20 +40,8 @@ def cepstrum(spectrogram, target = 16):
     '''
     Compute the cepstrum from a spectrogram
     '''
-    _, d = spectrogram.shape
-    window  = d // target
-    step    = window // 2
-    hanning = np.hanning(window)
-    print(window, step)
-    result  = [] 
-    for frame in spectrogram:
-        ceps = np.zeros(target) 
-        for i in range(window, d, step):
-            ceps[(i - 1) // window] = np.log(np.sum(frame[i - window : i] * hanning) + 1.0)
-        result.append(dct(ceps))    
-    result = np.array(result)
+    result = np.array([dct(frame)[0:target] for frame in spectrogram])
     mu     = np.mean(result, axis=0)
     std    = np.std(result + 1e-6, axis=0)
     result = (result - mu) / std
     return result
-

@@ -16,6 +16,12 @@ sequences = [
     cepstrum(spectrogram_from_file('data/whistle71.wav', 1024, 512))
 ]
 
+plt.subplot(2,1,1)
+plt.imshow(sequences[0].T)
+plt.subplot(2,1,2)
+plt.imshow(sequences[1].T)
+plt.show()
+
 n_states = 10
 transitions = DenseMarkovChain(n_states)
 per_state   = [int(max(x.shape[0] / n_states, 1)) for x in sequences]

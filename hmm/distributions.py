@@ -19,10 +19,15 @@ class GaussianMixtureModel:
         probs     = gm.weights_ 
         gaussians = [Gaussian(means[i], variances[i]) for i in range(0, k)]
         return cls(probs, gaussians)
-        
+
     @property
     def k(self):
         return len(self.probs)
+
+    def at(self, i, x):
+        p = LogProb.from_float(self.probs[i]) * self.gaussians[i][x]
+        scaler = self[x]
+        return p / scaler
 
     def __getitem__(self, x):
         result = LogProb(ZERO)
