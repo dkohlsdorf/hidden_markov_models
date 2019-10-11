@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import multiprocessing
 
 from hmm.features.audio import *
 from hmm.markov_chain import *
@@ -43,9 +44,10 @@ for i in range(0, n_states):
     sigma   = np.var(vectors, axis=0) 
     observations.append(Gaussian(mu, sigma))
 
-hmm = HiddenMarkovModel(transitions, observations)
+hmm  = HiddenMarkovModel(transitions, observations)
+pool = multiprocessing.Pool(processes=2)
 for i in range(0, 10):
-    inference    = [infer.infer(hmm, seq) for seq in sequences]
+    inference    = pool.map(lambda seq: infer.infer(hmm, seq), sequences)
     gammas       = [gamma for gamma, _, _ in inference]
     zetas        = [bw.infer(hmm, sequences[i], inference[i][1], inference[i][2]) for i in range(0, len(inference))]    
     transitions  = bw.markov(zetas, gammas, DenseMarkovChain)
