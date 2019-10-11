@@ -16,10 +16,6 @@ sequences = [
     cepstrum(spectrogram_from_file('data/whistle71.wav', 1024, 512))
 ]
 
-gmm = GaussianMixtureModel.from_dataset(sequences[0],8)
-print([gmm[x] for x in sequences[0]])
-
-'''
 n_states = 10
 transitions = DenseMarkovChain(n_states)
 per_state   = [int(max(x.shape[0] / n_states, 1)) for x in sequences]
@@ -59,4 +55,4 @@ for i in range(0, 10):
     observations = bw.continuous_obs(sequences, gammas)
     hmm = HiddenMarkovModel(transitions, observations)
 alignment = pool.starmap(viterbi, [(hmm, seq) for seq in sequences])
-print(alignment)'''
+print(alignment)
