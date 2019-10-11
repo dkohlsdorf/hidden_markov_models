@@ -1,7 +1,33 @@
 import numpy as np
 import io
-
+from sklearn.mixture import GaussianMixture
 from hmm.logprob import LogProb, ZERO
+
+
+class GaussianMixtureModel:
+
+    def __init__(self, probs, gaussians):
+        self.probs = probs
+        self.gaussians = gaussians
+
+    @classmethod
+    def from_dataset(cls, dataset, k):
+        gm = GaussianMixture(k, 'diag')
+        gm.fit(dataset)
+        variances = gm.covariances_
+        means     = gm.means_
+        probs     = gm.weights_ 
+        print(variances)
+
+    @property
+    def k(self):
+        return len(self.probs)
+
+    def __getitem__(self, x):
+        result = LogProb(ZERO)
+        for i in range(self.k):
+            result += LogProb.from_float(self.probs[i]) * self.gaussians[i][x]        
+        return result
 
 
 class Multinomial:

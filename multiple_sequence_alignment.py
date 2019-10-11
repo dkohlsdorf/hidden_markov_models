@@ -8,7 +8,6 @@ from hmm.logprob import *
 from hmm.distributions import *
 from hmm.hidden_markov_model import * 
 from hmm.viterbi import *
-
 import hmm.baum_welch as bw 
 import hmm.fwd_bwd as infer
 
@@ -17,6 +16,10 @@ sequences = [
     cepstrum(spectrogram_from_file('data/whistle71.wav', 1024, 512))
 ]
 
+GaussianMixtureModel.from_dataset(sequences[0],8)
+
+
+'''
 n_states = 10
 transitions = DenseMarkovChain(n_states)
 per_state   = [int(max(x.shape[0] / n_states, 1)) for x in sequences]
@@ -44,7 +47,7 @@ for i in range(0, n_states):
     sigma   = np.var(vectors, axis=0) 
     observations.append(Gaussian(mu, sigma))
 
-hmm = HiddenMarkovModel(transitions, observations)
+hmm  = HiddenMarkovModel(transitions, observations)
 pool = multiprocessing.Pool(processes=2)
 for i in range(0, 10):
     inference    = pool.starmap(infer.infer, [(hmm, seq) for seq in sequences])
@@ -56,4 +59,4 @@ for i in range(0, 10):
     observations = bw.continuous_obs(sequences, gammas)
     hmm = HiddenMarkovModel(transitions, observations)
 alignment = pool.starmap(viterbi, [(hmm, seq) for seq in sequences])
-print(alignment)
+print(alignment)'''
