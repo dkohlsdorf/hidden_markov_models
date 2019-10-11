@@ -17,8 +17,9 @@ class GaussianMixtureModel:
         variances = gm.covariances_
         means     = gm.means_
         probs     = gm.weights_ 
-        print(variances)
-
+        gaussians = [Gaussian(means[i], variances[i]) for i in range(0, k)]
+        return cls(probs, gaussians)
+        
     @property
     def k(self):
         return len(self.probs)

@@ -16,8 +16,8 @@ sequences = [
     cepstrum(spectrogram_from_file('data/whistle71.wav', 1024, 512))
 ]
 
-GaussianMixtureModel.from_dataset(sequences[0],8)
-
+gmm = GaussianMixtureModel.from_dataset(sequences[0],8)
+print([gmm[x] for x in sequences[0]])
 
 '''
 n_states = 10
