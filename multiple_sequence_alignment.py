@@ -44,10 +44,10 @@ for i in range(0, n_states):
     sigma   = np.var(vectors, axis=0) 
     observations.append(Gaussian(mu, sigma))
 
-hmm  = HiddenMarkovModel(transitions, observations)
+hmm = HiddenMarkovModel(transitions, observations)
 pool = multiprocessing.Pool(processes=2)
 for i in range(0, 10):
-    inference    = pool.map(lambda seq: infer.infer(hmm, seq), sequences)
+    inference    = pool.starmap(infer.infer, [(hmm, seq) for seq in sequences])
     gammas       = [gamma for gamma, _, _ in inference]
     zetas        = [bw.infer(hmm, sequences[i], inference[i][1], inference[i][2]) for i in range(0, len(inference))]    
     transitions  = bw.markov(zetas, gammas, DenseMarkovChain)
@@ -55,6 +55,5 @@ for i in range(0, 10):
     transitions[Transition(n_states - 1, STOP_STATE)] = LogProb.from_float(1.0)
     observations = bw.continuous_obs(sequences, gammas)
     hmm = HiddenMarkovModel(transitions, observations)
-
-alignment = [viterbi(hmm, seq) for seq in sequences]
+alignment = pool.starmap(viterbi, [(hmm, seq) for seq in sequences])
 print(alignment)

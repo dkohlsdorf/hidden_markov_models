@@ -34,10 +34,10 @@ class DenseMarkovChain:
         i, j = transition
         if i == START_STATE:
             self.start[j] = prob.prob
-        if not prob.is_zero:
-            self.transitions[i][j] = prob.prob
-        if j == STOP_STATE:
+        elif j == STOP_STATE:
             self.stop[i] = prob.prob
+        elif not prob.is_zero:
+            self.transitions[i][j] = prob.prob
 
     def __getitem__(self, transition):
         assert isinstance(transition, Transition)   
