@@ -13,20 +13,22 @@ import hmm.fwd_bwd as infer
 
 
 all_sequences = [
-    cepstrum(spectrogram_from_file('data/whistle66.wav')),
-    cepstrum(spectrogram_from_file('data/whistle71.wav')),
-    cepstrum(spectrogram_from_file('data/burst15.wav')),
-    cepstrum(spectrogram_from_file('data/noise2.wav'))
+    mfcc_from_file('data/whistle66.wav'),
+    mfcc_from_file('data/whistle71.wav'),
+    mfcc_from_file('data/burst15.wav'),
+    mfcc_from_file('data/burst2.wav'),
+    mfcc_from_file('data/burst3.wav'),
+    mfcc_from_file('data/burst4.wav')
 ]
 
 plt.subplot(4,1,1)
-plt.imshow(all_sequences[0].T)
+plt.imshow(all_sequences[0].T, cmap='gray')
 plt.subplot(4,1,2)
-plt.imshow(all_sequences[1].T)
+plt.imshow(all_sequences[1].T, cmap='gray')
 plt.subplot(4,1,3)
-plt.imshow(all_sequences[2].T)
+plt.imshow(all_sequences[2].T, cmap='gray')
 plt.subplot(4,1,4)
-plt.imshow(all_sequences[3].T)
+plt.imshow(all_sequences[3].T, cmap='gray')
 plt.show()
 
 sequences = all_sequences[0:2]
