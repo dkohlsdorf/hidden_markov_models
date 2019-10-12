@@ -1,4 +1,5 @@
 import numpy as np
+import  tensorflow.keras as K
 
 from sksound.sounds import Sound
 from numpy.fft import fft
@@ -20,7 +21,7 @@ def spectrogram_from_file(filename, win=256, step=128):
   return spec 
 
 
-def spectrogram(audio, win=256, step=64):
+def spectrogram(audio, win=256, step=128):
     '''
     Compute the spectrogram of audio data
 
@@ -36,12 +37,11 @@ def spectrogram(audio, win=256, step=64):
     return np.array(spectrogram)
 
 
-def cepstrum(spectrogram, target = 16):
+def cepstrum(spectrogram):
     '''
     Compute the cepstrum from a spectrogram
     '''
-    result = np.array([dct(frame)[0:target] for frame in spectrogram])
-    mu     = np.mean(result, axis=0)
-    std    = np.std(result + 1e-6, axis=0)
-    result = (result - mu) / std
-    return result
+    x   = np.array([dct(np.log(np.square(frame))) for frame in spectrogram])
+    mu  = np.mean(x, axis = 0)
+    std = np.std(x,  axis = 0)
+    return  (x - mu) / std

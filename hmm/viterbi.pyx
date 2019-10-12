@@ -51,4 +51,4 @@ def viterbi(hmm, sequence):
         path[t] = i
         i = bp[t, i]
         t -= 1
-    return np.asarray(path), max_ll
+    return np.asarray(path), LogProb(max_ll.prob / T)

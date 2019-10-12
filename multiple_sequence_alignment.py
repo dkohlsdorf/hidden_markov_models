@@ -11,17 +11,25 @@ from hmm.viterbi import *
 import hmm.baum_welch as bw 
 import hmm.fwd_bwd as infer
 
-sequences = [
-    cepstrum(spectrogram_from_file('data/whistle66.wav', 1024, 512)),
-    cepstrum(spectrogram_from_file('data/whistle71.wav', 1024, 512))
+
+all_sequences = [
+    cepstrum(spectrogram_from_file('data/whistle66.wav')),
+    cepstrum(spectrogram_from_file('data/whistle71.wav')),
+    cepstrum(spectrogram_from_file('data/burst15.wav')),
+    cepstrum(spectrogram_from_file('data/noise2.wav'))
 ]
 
-plt.subplot(2,1,1)
-plt.imshow(sequences[0].T)
-plt.subplot(2,1,2)
-plt.imshow(sequences[1].T)
+plt.subplot(4,1,1)
+plt.imshow(all_sequences[0].T)
+plt.subplot(4,1,2)
+plt.imshow(all_sequences[1].T)
+plt.subplot(4,1,3)
+plt.imshow(all_sequences[2].T)
+plt.subplot(4,1,4)
+plt.imshow(all_sequences[3].T)
 plt.show()
 
+sequences = all_sequences[0:2]
 n_states = 10
 transitions = DenseMarkovChain(n_states)
 per_state   = [int(max(x.shape[0] / n_states, 1)) for x in sequences]
@@ -60,5 +68,5 @@ for i in range(0, 10):
     transitions[Transition(n_states - 1, STOP_STATE)] = LogProb.from_float(1.0)
     observations = bw.continuous_obs(sequences, gammas)
     hmm = HiddenMarkovModel(transitions, observations)
-alignment = pool.starmap(viterbi, [(hmm, seq) for seq in sequences])
+alignment = pool.starmap(viterbi, [(hmm, seq) for seq in all_sequences])
 print(alignment)
