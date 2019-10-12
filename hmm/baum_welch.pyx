@@ -2,7 +2,7 @@ import numpy as np
 
 from hmm.logprob import ZERO, LogProb
 from hmm.markov_chain import Transition, MarkovChain
-from hmm.distributions import Multinomial, Gaussian
+from hmm.distributions import Multinomial, Gaussian, GaussianMixtureModel
 
 
 def infer(hmm, sequence, fwd, bwd):
@@ -73,10 +73,45 @@ def discrete_obs(sequences, gammas, domain):
     return multinomials
 
 
-def continuous_mixture(sequences, gamma_seq, prev_obs):
+def continuous_mixture(sequences, gammas, prev_obs):
     assert len(gammas) > 0 and len(sequences) == len(gammas)
-    pass
-
+    cdef int m = len(gammas)
+    cdef int n = gammas[0].shape[1]
+    cdef int d = sequences[0].shape[1]
+    cdef int k = len(prev_obs)
+    cdef int i, j, e, t
+    observations = []
+    for i in range(0, n):
+        scaler_cmp = LogProb(ZERO)
+        cmp_prob   = []
+        cmp_gauss  = []
+        for j in range(0, k):
+            mu       = np.zeros(d)
+            sigma    = np.zeros(d) 
+            prob_cmp = LogProb(ZERO) 
+            scaler_gaussians = 0 
+            for e in range(0, m):
+                T = gammas[e].shape[0]
+                for t in range(0, T):
+                    g                 = LogProb(gammas[e][t, i]) * prev_obs[i].at(j, sequences[e][t])
+                    weight            = g.exp()
+                    prob_cmp         += g
+                    mu               += sequences[e][t] * weight
+                    scaler_gaussians += weight
+                    scaler_cmp       += g
+            mu /= scaler_gaussians
+            for e in range(0, m):
+                T = gammas[e].shape[0]
+                for t in range(0, T):
+                    g                 = LogProb(gammas[e][t, i]) * prev_obs[i].at(j, sequences[e][t])
+                    weight            = g.exp()
+                    sigma += np.square(sequences[e][t] - mu) * weight
+            sigma /= scaler_gaussians
+            cmp_gauss.append(Gaussian(mu, sigma))
+            cmp_prob.append(prob_cmp)
+        probs = np.array([(prob / scaler_cmp).exp() for prob in cmp_prob])
+        observations.append(GaussianMixtureModel(probs, cmp_gauss))
+    return observations
 
 def continuous_obs(sequences, gammas):
     assert len(gammas) > 0 and len(sequences) == len(gammas)
