@@ -7,6 +7,7 @@ from hmm.logprob import LogProb, ZERO
 class GaussianMixtureModel:
 
     def __init__(self, probs, gaussians):
+        assert len(probs) == len(gaussians)
         self.probs = probs
         self.gaussians = gaussians
 

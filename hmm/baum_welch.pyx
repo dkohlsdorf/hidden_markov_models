@@ -78,7 +78,7 @@ def continuous_mixture(sequences, gammas, prev_obs):
     cdef int m = len(gammas)
     cdef int n = gammas[0].shape[1]
     cdef int d = sequences[0].shape[1]
-    cdef int k = len(prev_obs)
+    cdef int k = len(prev_obs[0].probs)
     cdef int i, j, e, t
     observations = []
     for i in range(0, n):
@@ -94,7 +94,7 @@ def continuous_mixture(sequences, gammas, prev_obs):
                 T = gammas[e].shape[0]
                 for t in range(0, T):
                     g                 = LogProb(gammas[e][t, i]) * prev_obs[i].at(j, sequences[e][t])
-                    weight            = g.exp()
+                    weight            = g.exp
                     prob_cmp         += g
                     mu               += sequences[e][t] * weight
                     scaler_gaussians += weight
@@ -104,12 +104,12 @@ def continuous_mixture(sequences, gammas, prev_obs):
                 T = gammas[e].shape[0]
                 for t in range(0, T):
                     g                 = LogProb(gammas[e][t, i]) * prev_obs[i].at(j, sequences[e][t])
-                    weight            = g.exp()
+                    weight            = g.exp
                     sigma += np.square(sequences[e][t] - mu) * weight
             sigma /= scaler_gaussians
             cmp_gauss.append(Gaussian(mu, sigma))
             cmp_prob.append(prob_cmp)
-        probs = np.array([(prob / scaler_cmp).exp() for prob in cmp_prob])
+        probs = np.array([(prob / scaler_cmp).exp for prob in cmp_prob])
         observations.append(GaussianMixtureModel(probs, cmp_gauss))
     return observations
 

@@ -5,10 +5,10 @@ import matplotlib.pyplot as plt
 
 import hmm.fwd_bwd    as infer
 import hmm.baum_welch as bw
-
-from hmm.tests.left_right_hmm import HMM, HMM_CONT
-from hmm.markov_chain import Transition
-from hmm.logprob import ZERO
+from hmm.hidden_markov_model import HiddenMarkovModel
+from hmm.tests.left_right_hmm import HMM, HMM_CONT, HMM_MIX
+from hmm.markov_chain import Transition, START_STATE, STOP_STATE, DenseMarkovChain
+from hmm.logprob import ZERO, LogProb
 
 class BaumWelchTests(unittest.TestCase):
 
@@ -57,6 +57,48 @@ class BaumWelchTests(unittest.TestCase):
         self.assertGreater(obs[0][0], obs[0][1])
         self.assertGreater(obs[1][1], obs[1][0])
         self.assertGreater(obs[2][0], obs[2][1])
+
+    def test_mixture_obs(self):
+        sequences = [
+            np.array([
+                np.zeros(1),
+                np.zeros(1),
+                np.zeros(1),
+                np.ones(1),
+                np.ones(1),
+                np.ones(1),
+                np.zeros(1),
+                np.zeros(1),
+                np.zeros(1)
+            ]),
+            np.array([
+                np.ones(1) * 10,
+                np.ones(1) * 10,
+                np.ones(1) * 10,
+                np.ones(1) * 100,
+                np.ones(1) * 100,
+                np.ones(1) * 100,
+                np.ones(1) * 10,
+                np.ones(1) * 10,
+                np.ones(1) * 10
+            ])
+        ]
+        hmm = HMM_MIX
+        inference    = [infer.infer(hmm, seq) for seq in sequences]
+        gammas       = [gamma for gamma, _, _ in inference]
+        obs          = bw.continuous_mixture(sequences, gammas, hmm.observations)
+        self.assertAlmostEqual(0.5, obs[0].probs[0], delta=1e-2)
+        self.assertAlmostEqual(0.5, obs[0].probs[1], delta=1e-2)
+        self.assertAlmostEqual(0.5, obs[1].probs[0], delta=1e-2)
+        self.assertAlmostEqual(0.5, obs[1].probs[1], delta=1e-2)
+        self.assertAlmostEqual(0.5, obs[2].probs[0], delta=1e-2)
+        self.assertAlmostEqual(0.5, obs[2].probs[1], delta=1e-2)
+        self.assertEqual(10,  round(obs[0].gaussians[0].mean[0]))
+        self.assertEqual(0,   round(obs[0].gaussians[1].mean[0]))
+        self.assertEqual(100, round(obs[1].gaussians[0].mean[0]))
+        self.assertEqual(1,   round(obs[1].gaussians[1].mean[0]))
+        self.assertEqual(10,  round(obs[2].gaussians[0].mean[0]))
+        self.assertEqual(0,   round(obs[2].gaussians[1].mean[0]))
 
     def test_continuous_obs(self):
         seq = np.array([
