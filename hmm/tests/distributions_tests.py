@@ -3,10 +3,29 @@ import numpy as np
 from math import log
 from functools import reduce
 
-import tensorflow as tf
-
-from hmm.distributions import Multinomial, Gaussian
+from hmm.distributions import Multinomial, Gaussian, GaussianMixtureModel
 from hmm.logprob import LogProb, ZERO
+
+class GaussianMixtureModelTest(unittest.TestCase):
+    
+    def test_mixture(self):
+        gaussians = [Gaussian(np.zeros(3), np.ones(3)), Gaussian(np.ones(3) * 10, np.ones(3) * 20)]
+        probs     = [0.5, 0.5]
+        mixture   = GaussianMixtureModel(probs, gaussians)
+        x         = np.ones(3) * 10
+        self.assertAlmostEqual(
+            mixture[x].prob, 
+            log(0.5 * GaussianTest.normal(x) + 0.5 * GaussianTest.normal(x, 10, 20)), 
+            delta=1e-8
+        )
+
+    def test_at(self):
+        gaussians = [Gaussian(np.zeros(3), np.ones(3)), Gaussian(np.ones(3) * 10, np.ones(3) * 20)]
+        probs     = [0.5, 0.5]
+        mixture   = GaussianMixtureModel(probs, gaussians)
+        x         = np.ones(3) * 10
+        scaler    = 0.5 * GaussianTest.normal(x) + 0.5 * GaussianTest.normal(x, 10, 20)
+        self.assertAlmostEqual(mixture.at(0, x).prob, log((0.5 * GaussianTest.normal(x)) / scaler ) , delta=1e-8)
 
 
 class MultinomialTest(unittest.TestCase):
@@ -17,8 +36,8 @@ class MultinomialTest(unittest.TestCase):
 
     def test_loglikelihood(self):
         multinomial = Multinomial({0:0.2, 1:0.8})
-        self.assertAlmostEqual(multinomial[0].prob, log(0.2), 1e-8)
-        self.assertAlmostEqual(multinomial[1].prob, log(0.8), 1e-8)        
+        self.assertAlmostEqual(multinomial[0].prob, log(0.2), delta=1e-8)
+        self.assertAlmostEqual(multinomial[1].prob, log(0.8), delta=1e-8)        
 
 
 class GaussianTest(unittest.TestCase):
