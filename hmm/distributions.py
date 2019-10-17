@@ -12,8 +12,8 @@ class GaussianMixtureModel:
         self.gaussians = gaussians
 
     @classmethod
-    def from_dataset(cls, dataset, k):
-        gm = GaussianMixture(k, 'diag')
+    def from_dataset(cls, dataset, k, random_state=0):
+        gm = GaussianMixture(k, 'diag', random_state)
         gm.fit(dataset)
         variances = gm.covariances_
         means     = gm.means_

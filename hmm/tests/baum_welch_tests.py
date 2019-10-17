@@ -9,6 +9,7 @@ from hmm.hidden_markov_model import HiddenMarkovModel
 from hmm.tests.left_right_hmm import HMM, HMM_CONT, HMM_MIX
 from hmm.markov_chain import Transition, START_STATE, STOP_STATE, DenseMarkovChain
 from hmm.logprob import ZERO, LogProb
+from hmm.distributions import GaussianMixtureModel
 
 class BaumWelchTests(unittest.TestCase):
 
@@ -58,6 +59,45 @@ class BaumWelchTests(unittest.TestCase):
         self.assertGreater(obs[1][1], obs[1][0])
         self.assertGreater(obs[2][0], obs[2][1])
 
+    def test_tied_mixture_obs(self):
+        sequences = [
+            np.array([
+                np.zeros(1),
+                np.zeros(1),
+                np.zeros(1),
+                np.ones(1),
+                np.ones(1),
+                np.ones(1),
+                np.zeros(1),
+                np.zeros(1),
+                np.zeros(1)
+            ]),
+            np.array([
+                np.ones(1) * 10,
+                np.ones(1) * 10,
+                np.ones(1) * 10,
+                np.ones(1) * 100,
+                np.ones(1) * 100,
+                np.ones(1) * 100,
+                np.ones(1) * 10,
+                np.ones(1) * 10,
+                np.ones(1) * 10
+            ])
+        ]
+        hmm = HMM_MIX
+        gmm = GaussianMixtureModel.from_dataset(np.vstack(sequences), 4)
+        hmm.observations = [gmm for i in range(0, 3)]
+        for _ in range(0, 50):
+            inference    = [infer.infer(hmm, seq) for seq in sequences]
+            gammas       = [gamma for gamma, _, _ in inference]
+            obs          = bw.continuous_tied_mixture(sequences, gammas, hmm.observations)
+            hmm.observations = obs
+        self.assertEqual(round(gmm.gaussians[0].mean[0]), round(obs[0].gaussians[0].mean[0]))
+        self.assertEqual(round(gmm.gaussians[1].mean[0]), round(obs[0].gaussians[1].mean[0]))
+        self.assertEqual(round(gmm.gaussians[2].mean[0]), round(obs[0].gaussians[2].mean[0]))
+        self.assertEqual(round(gmm.gaussians[3].mean[0]), round(obs[0].gaussians[3].mean[0]))
+
+
     def test_mixture_obs(self):
         sequences = [
             np.array([
@@ -84,21 +124,29 @@ class BaumWelchTests(unittest.TestCase):
             ])
         ]
         hmm = HMM_MIX
-        inference    = [infer.infer(hmm, seq) for seq in sequences]
-        gammas       = [gamma for gamma, _, _ in inference]
-        obs          = bw.continuous_mixture(sequences, gammas, hmm.observations)
-        self.assertAlmostEqual(0.5, obs[0].probs[0], delta=1e-2)
-        self.assertAlmostEqual(0.5, obs[0].probs[1], delta=1e-2)
-        self.assertAlmostEqual(0.5, obs[1].probs[0], delta=1e-2)
-        self.assertAlmostEqual(0.5, obs[1].probs[1], delta=1e-2)
-        self.assertAlmostEqual(0.5, obs[2].probs[0], delta=1e-2)
-        self.assertAlmostEqual(0.5, obs[2].probs[1], delta=1e-2)
+        for _ in range(0, 100):
+            inference    = [infer.infer(hmm, seq) for seq in sequences]
+            gammas       = [gamma for gamma, _, _ in inference]
+            obs          = bw.continuous_mixture(sequences, gammas, hmm.observations)
+            hmm.observations = obs
+        self.assertAlmostEqual(0.5, obs[0].probs[0], delta=1e-1)
+        self.assertAlmostEqual(0.5, obs[0].probs[1], delta=1e-1)
+        self.assertAlmostEqual(0.5, obs[1].probs[0], delta=1e-1)
+        self.assertAlmostEqual(0.5, obs[1].probs[1], delta=1e-1)
+        self.assertAlmostEqual(0.5, obs[2].probs[0], delta=1e-1)
+        self.assertAlmostEqual(0.5, obs[2].probs[1], delta=1e-1)
         self.assertEqual(10,  round(obs[0].gaussians[0].mean[0]))
         self.assertEqual(0,   round(obs[0].gaussians[1].mean[0]))
         self.assertEqual(100, round(obs[1].gaussians[0].mean[0]))
         self.assertEqual(1,   round(obs[1].gaussians[1].mean[0]))
         self.assertEqual(10,  round(obs[2].gaussians[0].mean[0]))
         self.assertEqual(0,   round(obs[2].gaussians[1].mean[0]))
+        self.assertGreaterEqual(obs[0].gaussians[0].variance[0], 1.0)
+        self.assertGreaterEqual(obs[0].gaussians[1].variance[0], 1.0)
+        self.assertGreaterEqual(obs[1].gaussians[0].variance[0], 1.0)
+        self.assertGreaterEqual(obs[1].gaussians[1].variance[0], 1.0)
+        self.assertGreaterEqual(obs[2].gaussians[0].variance[0], 1.0)
+        self.assertGreaterEqual(obs[2].gaussians[1].variance[0], 1.0)
 
     def test_continuous_obs(self):
         seq = np.array([
@@ -112,10 +160,13 @@ class BaumWelchTests(unittest.TestCase):
             np.zeros(1),
             np.zeros(1)
         ])
-        gamma, _, _ = infer.infer(HMM_CONT, seq)
-        gammas    = [gamma]
-        sequences = [seq]
-        obs       = bw.continuous_obs(sequences, gammas)
+        hmm = HMM_CONT
+        for _ in range(0, 10):
+            gamma, _, _ = infer.infer(HMM_CONT, seq)
+            gammas    = [gamma]
+            sequences = [seq]
+            obs       = bw.continuous_obs(sequences, gammas)
+            hmm.observations = obs
         self.assertEqual(round(obs[0].mean[0]), 0)
         self.assertEqual(round(obs[1].mean[0]), 1)
         self.assertEqual(round(obs[2].mean[0]), 0)
