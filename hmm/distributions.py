@@ -21,6 +21,16 @@ class GaussianMixtureModel:
         gaussians = [Gaussian(means[i], variances[i]) for i in range(0, k)]
         return cls(probs, gaussians)
 
+    def component(self, x):
+        max_component = 0
+        max_ll        = ZERO
+        for i in range(0, self.k):
+            ll = self.at(i, x)
+            if ll.prob > max_ll.prob:        
+                max_ll = ll
+                max_component = i
+        return max_component
+        
     @property
     def k(self):
         return len(self.probs)
