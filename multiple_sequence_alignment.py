@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import multiprocessing
 
+from collections import namedtuple
+
 from hmm.features.audio import *
 from hmm.markov_chain import *
 from hmm.logprob import * 
@@ -10,6 +12,14 @@ from hmm.hidden_markov_model import *
 from hmm.viterbi import *
 import hmm.baum_welch as bw 
 import hmm.fwd_bwd as infer
+
+
+MSATuple = namedtuple('MSATuple', 'start component')
+
+
+def align(alignments, n_states):
+    pass
+
 
 print("-------------------------------")
 print("# Multiple Sequence Alignment #")
@@ -62,7 +72,7 @@ hmm  = HiddenMarkovModel(transitions, observations)
 pool = multiprocessing.Pool(processes=2)
 
 print("\t EM: Baum Welch Estimation")
-for i in range(0, 10):
+for i in range(0, 4):
     print("\t\t - iter: {}".format(i))
     inference    = pool.starmap(infer.infer, [(hmm, seq) for seq in sequences])
     gammas       = [gamma for gamma, _, _ in inference]
@@ -75,7 +85,7 @@ for i in range(0, 10):
 
 print("\t Viterbi Alignemnt")    
 alignments = pool.starmap(viterbi, [(hmm, seq) for seq in all_sequences])
-alignments = [[(alignments[i][0][j], hmm.observations[alignments[i][0][j]].component(sequences[i][j, :])) for j in range(len(alignments[i][0]))] for i in range(len(alignments))]
+alignments = [[MSATuple(alignments[i][0][j], hmm.observations[alignments[i][0][j]].component(sequences[i][j, :])) for j in range(len(alignments[i][0]))] for i in range(len(alignments))]
 
 for alignment in alignments:
     print(alignment)
