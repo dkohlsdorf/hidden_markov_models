@@ -6,5 +6,5 @@ It also supports supervised and unsupervised learning.
 Testing:
 
 ```
-python -m unittest hmm.tests.baum_welch_tests
+python -m unittest discover -s hmm/tests -v
 ```
