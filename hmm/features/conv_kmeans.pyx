@@ -1,4 +1,6 @@
 from sklearn.cluster import KMeans
+from scipy.fftpack import dct
+
 import numpy as np
 
 class ConvolutionalKMeans:
@@ -18,18 +20,37 @@ class ConvolutionalKMeans:
     cdef double min_dist = float('inf')
     features = []    
     for i in range(self.win_t, t):
-        min_dist = float('inf')
-        for j in range(self.win_d, d):
-            for k in range(self.k):
+        vector = []
+        for k in range(self.k):
+            min_dist = float('inf')
+            for j in range(self.win_d, d):
                 sample   = sequence[i - self.win_t:i, j - self.win_d:j].flatten()
                 centroid = self.centroids[k, :]
                 distance = np.sum(np.square(sample - centroid))
                 if distance < min_dist:
                     min_dist = distance
-        features.append(min_dist)
+                idx = j - self.win_d
+                if idx % (d // 4) == 0 and idx > 0:
+                    vector.append(min_dist)
+                    min_dist = float('inf')
+            vector.append(min_dist)
+        features.append(vector)
+    features = np.array(features)    
+
+    # decorrelate
+    for i in range(0, len(features)):
+        features[i] = dct(np.log(features[i]))
+
+    # normalize
+    mu  = np.mean(features, axis=0)
+    std = np.std(features,  axis=0)
+    for i in range(0, len(features)):
+        features[i] = mu - features[i]
+        
+    return features
 
   @classmethod
-  def from_dataset(cls, x, k=10, win_t=10, win_d=30):
+  def from_dataset(cls, x, k=10, win_t=10, win_d=30, max_iter=100):
     cdef int n = len(x)
     cdef int i, j, l, t, d
     windows = []    
@@ -40,6 +61,6 @@ class ConvolutionalKMeans:
         for l in range(win_d, d):
           windows.append(sequence[j - win_t:j, l - win_d:l].flatten())
     windows = np.stack(windows)
-    km = KMeans(k)
+    km = KMeans(k, algorithm='elkan', max_iter=max_iter)
     km.fit(windows)
     return cls(km.cluster_centers_, win_t, win_d)

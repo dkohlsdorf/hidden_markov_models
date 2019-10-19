@@ -1,6 +1,7 @@
 import numpy as np
 from hmm.markov_chain import  START_STATE, STOP_STATE, Transition
 from hmm.logprob import ZERO, LogProb
+from hmm.distributions import GaussianMixtureModel 
 
 def viterbi(hmm, sequence): 
     cdef int T = sequence.shape[0]

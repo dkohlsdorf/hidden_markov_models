@@ -1,3 +1,6 @@
+# TODO Move this to a notebook
+
+
 import numpy as np
 import matplotlib.pyplot as plt
 import multiprocessing
@@ -16,7 +19,7 @@ import hmm.fwd_bwd as infer
 
 pool = multiprocessing.Pool(processes=2)
 
-MSATuple = namedtuple('MSATuple', 'start component')
+MSATuple = namedtuple('MSATuple', 'start frame')
 
 def pad(list, target):
     n = len(list)
@@ -26,23 +29,26 @@ def pad(list, target):
         padded.append(None)
     return padded
 
-def align_by_state(alignments, n_states):
+def align_by_state(alignments, n_states, hmm):
     n = len(alignments)
     msa = [[[] for _ in range(n)] for _ in range(n_states)]
     for i in range(n):
-        for s, c in alignments[i]:
-            msa[s][i].append(c)
+        for s, frame in alignments[i]:
+            msa[s][i].append(frame)
+            
     max_states = [max([len(a) for a in s]) for s in msa]
     for a in range(0, n):
         for s in range(0, n_states):
+            component = hmm.observations[s].component_all(msa[s][a])
+            msa[s][a] = [component for _ in range(len(msa[s][a]))]
             msa[s][a] = pad(msa[s][a], max_states[s])
     return msa
 
 print("\n\n")
-print("-------------------------------")
-print("# Multiple Sequence Alignment #")
-print("# by Daniel Kohlsdorf         #")
-print("-------------------------------")
+print("#########################################")
+print("# Multiple Sequence Alignment For Audio #")
+print("# by Daniel Kohlsdorf                   #")
+print("#########################################")
 
 all_sequences = [
     spectrogram_from_file('data/whistle66.wav'),
@@ -55,14 +61,14 @@ all_sequences = [
 sequences = all_sequences[0:2]
 
 print("\tLearn Feature space")
-km = ConvolutionalKMeans.from_dataset(sequences)
+km = ConvolutionalKMeans.from_dataset(sequences, k=32, win_t=10, win_d=10, max_iter=250)
 sequences = [km[sequence] for sequence in sequences]
 
 print("\tPlot Centroids")
-k = km.centroids
+k = len(km.centroids)
 for i, centroid in enumerate(km.centroids):
     plt.subplot(1, k, i + 1)
-    plt.imshow(np.reshape(centroid, (10, 30)).T)
+    plt.imshow(np.reshape(centroid, (10, 10)).T)
 plt.show()
 
 print("\tPlot Sequences")
@@ -73,12 +79,12 @@ plt.imshow(sequences[1].T, cmap='gray')
 plt.show()
 
 print("\tPlot Distances frame to frame")
-n = len(all_sequences[0])
-m = len(all_sequences[1])
+n = len(sequences[0])
+m = len(sequences[1])
 features = np.zeros((n, m))
 for i in range(0, n):
     for j in range(0, m):
-        features[i][j] = np.sqrt(np.sum(np.square(all_sequences[0][i] - all_sequences[1][j])))
+        features[i][j] = np.sqrt(np.sum(np.square(sequences[0][i] - sequences[1][j])))
 plt.imshow(features.T)
 plt.show()
 
@@ -95,8 +101,7 @@ plt.imshow(all_sequences[1].T, cmap='gray')
 plt.show()
 
 print("\t Initialize Hidden Markov Model")
-sequences = all_sequences[0:2]
-n_states = 25
+n_states = 8
 transitions = DenseMarkovChain(n_states)
 per_state   = [int(max(x.shape[0] / n_states, 1)) for x in sequences]
 
@@ -137,6 +142,7 @@ for i in range(0, n_states):
     prob /= sum(prob)
     observations.append(GaussianMixtureModel(prob, gmm.gaussians))
 hmm  = HiddenMarkovModel(transitions, observations)
+print(hmm.transitions)
 
 print("\t Plot Components Map")
 cmp_map = np.zeros((n_states, n_components))
@@ -171,8 +177,11 @@ plt.imshow(cmp_map)
 plt.show()
 
 alignments = pool.starmap(viterbi, [(hmm, seq) for seq in sequences])
-alignments = [[MSATuple(alignments[i][0][j], hmm.observations[alignments[i][0][j]].component(sequences[i][j, :])) for j in range(len(alignments[i][0]))] for i in range(len(alignments))]
-alignments = align_by_state(alignments, n_states)
+for alignment in alignments:
+    print(alignment)
+
+alignments = [[MSATuple(alignments[i][0][j], sequences[i][j, :]) for j in range(len(alignments[i][0]))] for i in range(len(alignments))]
+alignments = align_by_state(alignments, n_states, hmm)
 print("\n\n")
 
 for i in range(0, len(sequences)):

@@ -26,6 +26,18 @@ class GaussianMixtureModel:
         gaussians = [Gaussian(means[i], variances[i]) for i in range(0, k)]
         return cls(probs, gaussians)
 
+    def component_all(self, x):
+        max_component = 0
+        max_ll        = ZERO
+        for i in range(0, self.k):
+            ll = LogProb.from_float(1)            
+            for sample in x:
+                ll *= self.at(i, sample)
+            if ll.prob > max_ll:        
+                max_ll = ll.prob
+                max_component = i
+        return max_component
+
     def component(self, x):
         max_component = 0
         max_ll        = ZERO
