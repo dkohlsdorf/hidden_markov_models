@@ -72,6 +72,7 @@ def discrete_obs(sequences, gammas, domain):
         multinomials.append(observations)
     return multinomials
 
+
 def continuous_tied_mixture(sequences, gammas, prev_obs, min_variance=1.0):
     assert len(gammas) > 0 and len(sequences) == len(gammas)
     cdef int m = len(gammas)
@@ -121,6 +122,7 @@ def continuous_tied_mixture(sequences, gammas, prev_obs, min_variance=1.0):
     ]) for i in range(0, n)]
     return observations
 
+
 def continuous_mixture(sequences, gammas, prev_obs, min_variance=1.0):
     assert len(gammas) > 0 and len(sequences) == len(gammas)
     cdef int m = len(gammas)
@@ -162,6 +164,7 @@ def continuous_mixture(sequences, gammas, prev_obs, min_variance=1.0):
         probs = np.array([(prob / scaler_cmp).exp for prob in cmp_prob])
         observations.append(GaussianMixtureModel(probs, cmp_gauss))
     return observations
+
 
 def continuous_obs(sequences, gammas, min_variance=1.0):
     assert len(gammas) > 0 and len(sequences) == len(gammas)

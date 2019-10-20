@@ -3,6 +3,7 @@ from scipy.fftpack import dct
 
 import numpy as np
 
+
 class ConvolutionalKMeans:
 
   def __init__(self, centroids, win_t, win_d):
