@@ -31,23 +31,15 @@ class ConvolutionalKMeans:
                 if distance < min_dist:
                     min_dist = distance
                 idx = j - self.win_d
-                if idx % (d // 4) == 0 and idx > 0:
-                    vector.append(min_dist)
-                    min_dist = float('inf')
             vector.append(min_dist)
         features.append(vector)
     features = np.array(features)    
-
-    # decorrelate
-    for i in range(0, len(features)):
-        features[i] = dct(np.log(features[i]))
 
     # normalize
     mu  = np.mean(features, axis=0)
     std = np.std(features,  axis=0)
     for i in range(0, len(features)):
-        features[i] = mu - features[i]
-        
+        features[i] = (mu - features[i]) / std
     return features
 
   @classmethod
