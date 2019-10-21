@@ -12,5 +12,5 @@ class ViterbiTest(unittest.TestCase):
         seq = np.array([0,0,0,1,1,1,0,0,0])
         path, ll = viterbi(HMM, seq)
         self.assertListEqual(list(path), [0,0,0,1,1,1,2,2,2])
-        self.assertAlmostEqual(LogProb.from_float(0.001).prob, ll.prob, places=2)        
+        self.assertAlmostEqual(LogProb.from_float(0.4642583328759427).prob, ll.prob, places=2)        
 

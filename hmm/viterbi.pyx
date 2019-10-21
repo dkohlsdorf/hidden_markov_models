@@ -1,6 +1,7 @@
 import numpy as np
 from hmm.markov_chain import  START_STATE, STOP_STATE, Transition
 from hmm.logprob import ZERO, LogProb
+from hmm.distributions import GaussianMixtureModel 
 
 def viterbi(hmm, sequence): 
     cdef int T = sequence.shape[0]
@@ -51,4 +52,4 @@ def viterbi(hmm, sequence):
         path[t] = i
         i = bp[t, i]
         t -= 1
-    return np.asarray(path), max_ll
+    return np.asarray(path), LogProb(max_ll.prob / T)
